@@ -93,7 +93,7 @@ export default function Onboarding() {
                 value={customInterest}
                 onChange={(e) => setCustomInterest(e.target.value)}
                 placeholder="Enter custom interest"
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-500"
                 onKeyPress={(e) => e.key === 'Enter' && addCustomInterest()}
               />
               <button
@@ -114,7 +114,7 @@ export default function Onboarding() {
             value={location}
             onChange={(e) => setLocation(e.target.value)}
             placeholder="San Diego"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-500"
           />
         </div>
 
