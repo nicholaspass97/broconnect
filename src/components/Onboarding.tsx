@@ -5,7 +5,11 @@ import { PlusIcon } from '@heroicons/react/24/outline';
 
 const INTERESTS = ['Cycling', 'Game', 'BBQ', 'Golf', 'Fitness', 'Craft Beer', 'Board Games', 'Sports'];
 
-export default function Onboarding() {
+interface OnboardingProps {
+  onComplete?: () => void;
+}
+
+export default function Onboarding({ onComplete }: OnboardingProps) {
   const [relationshipStatus, setRelationshipStatus] = useState<'partnered' | 'married' | null>(null);
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [location, setLocation] = useState('');
@@ -23,6 +27,21 @@ export default function Onboarding() {
     if (customInterest.trim() && !selectedInterests.includes(customInterest.trim())) {
       setSelectedInterests(prev => [...prev, customInterest.trim()]);
       setCustomInterest('');
+    }
+  };
+
+  const handleContinue = () => {
+    if (relationshipStatus && selectedInterests.length > 0 && location) {
+      // Save onboarding data
+      console.log('Onboarding completed:', {
+        relationshipStatus,
+        interests: selectedInterests,
+        location
+      });
+      
+      if (onComplete) {
+        onComplete();
+      }
     }
   };
 
@@ -120,8 +139,9 @@ export default function Onboarding() {
 
         {/* Continue Button */}
         <button
-          className="w-full bg-gray-900 text-white py-4 rounded-lg font-semibold hover:bg-gray-800 transition-colors"
+          onClick={handleContinue}
           disabled={!relationshipStatus || selectedInterests.length === 0 || !location}
+          className="w-full bg-gray-900 text-white py-4 rounded-lg font-semibold hover:bg-gray-800 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
         >
           Continue
         </button>

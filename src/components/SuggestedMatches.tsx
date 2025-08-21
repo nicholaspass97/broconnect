@@ -13,13 +13,17 @@ interface Match {
   hasWaved: boolean;
 }
 
+interface SuggestedMatchesProps {
+  onNavigate?: (page: string) => void;
+}
+
 const MOCK_MATCHES: Match[] = [
   { id: '1', name: 'John', ageRange: '30-35', interests: ['Cycling', 'BBQ'], hasWaved: false },
   { id: '2', name: 'Mike', ageRange: '25-30', interests: ['Golf', 'Craft Beer'], hasWaved: false },
   { id: '3', name: 'Mark', ageRange: '30-35', interests: ['Fitness', 'Sports'], hasWaved: false },
 ];
 
-export default function SuggestedMatches() {
+export default function SuggestedMatches({ onNavigate }: SuggestedMatchesProps) {
   const [matches, setMatches] = useState<Match[]>(MOCK_MATCHES);
 
   const handleWave = (matchId: string) => {
@@ -30,6 +34,12 @@ export default function SuggestedMatches() {
           : match
       )
     );
+  };
+
+  const handleViewProfile = (matchId: string) => {
+    if (onNavigate) {
+      onNavigate('profile');
+    }
   };
 
   return (
@@ -52,16 +62,24 @@ export default function SuggestedMatches() {
                     <p className="text-xs text-gray-500">{match.interests.join(', ')}</p>
                   </div>
                 </div>
-                <button
-                  onClick={() => handleWave(match.id)}
-                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                    match.hasWaved
-                      ? 'bg-green-500 text-white'
-                      : 'bg-blue-500 text-white hover:bg-blue-600'
-                  }`}
-                >
-                  {match.hasWaved ? 'Waved!' : 'Wave'}
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handleViewProfile(match.id)}
+                    className="px-3 py-1 text-sm text-blue-500 hover:text-blue-600"
+                  >
+                    View
+                  </button>
+                  <button
+                    onClick={() => handleWave(match.id)}
+                    className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                      match.hasWaved
+                        ? 'bg-green-500 text-white'
+                        : 'bg-blue-500 text-white hover:bg-blue-600'
+                    }`}
+                  >
+                    {match.hasWaved ? 'Waved!' : 'Wave'}
+                  </button>
+                </div>
               </div>
             </div>
           ))}

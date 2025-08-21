@@ -3,11 +3,20 @@
 import { useState } from 'react';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 
-interface SignUpProps {
-  onNavigate?: (page: string) => void;
+interface UserProfile {
+  name: string;
+  ageRange: string;
+  interests: string[];
+  relationshipStatus: string;
+  location: string;
 }
 
-export default function SignUp({ onNavigate }: SignUpProps) {
+interface SignUpProps {
+  onNavigate?: (page: string) => void;
+  onComplete?: (profileData: UserProfile) => void;
+}
+
+export default function SignUp({ onNavigate, onComplete }: SignUpProps) {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -45,8 +54,16 @@ export default function SignUp({ onNavigate }: SignUpProps) {
     if (step === 2 && formData.age && formData.relationshipStatus) {
       // Handle account creation logic here
       console.log('Creating account:', formData);
-      if (onNavigate) {
-        onNavigate('onboarding');
+      
+      // Pass profile data to parent component
+      if (onComplete) {
+        onComplete({
+          name: `${formData.firstName} ${formData.lastName}`,
+          ageRange: formData.age,
+          relationshipStatus: formData.relationshipStatus,
+          interests: [],
+          location: ''
+        });
       }
     }
   };

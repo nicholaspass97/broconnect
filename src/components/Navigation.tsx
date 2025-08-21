@@ -1,7 +1,6 @@
 'use client';
 
-
-import { HomeIcon, UserGroupIcon, UsersIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { HomeIcon, UserGroupIcon, UsersIcon, ChatBubbleLeftRightIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
 
 interface NavigationProps {
   currentPage: string;
@@ -12,8 +11,9 @@ export default function Navigation({ currentPage, onPageChange }: NavigationProp
   const navItems = [
     { id: 'matches', label: 'Matches', icon: HomeIcon },
     { id: 'groups', label: 'Groups', icon: UserGroupIcon },
+    { id: 'chat', label: 'Chat', icon: ChatBubbleLeftRightIcon },
     { id: 'profile', label: 'Profile', icon: UsersIcon },
-    { id: 'onboarding', label: 'Setup', icon: PlusIcon },
+    { id: 'privacy', label: 'Safety', icon: ShieldCheckIcon },
   ];
 
   return (
