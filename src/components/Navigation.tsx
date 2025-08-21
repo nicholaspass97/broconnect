@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+
 import { HomeIcon, UserGroupIcon, UsersIcon, PlusIcon } from '@heroicons/react/24/outline';
 
 interface NavigationProps {

@@ -141,7 +141,7 @@ export default function SignIn({ onNavigate }: SignInProps) {
         {/* Sign Up Link */}
         <div className="text-center mt-6">
           <p className="text-gray-600">
-            Don't have an account?{' '}
+            Do not have an account?{' '}
             <button 
               onClick={() => onNavigate?.('signup')}
               className="text-blue-500 hover:text-blue-600 font-semibold"

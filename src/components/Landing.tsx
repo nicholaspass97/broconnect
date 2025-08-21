@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+
 import { UserGroupIcon, HeartIcon, MapPinIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
 
 export default function Landing({ onNavigate }: { onNavigate: (page: string) => void }) {
