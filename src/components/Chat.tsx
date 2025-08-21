@@ -65,7 +65,7 @@ export default function Chat({ matchName = 'Alex' }: ChatProps) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header showMenu={true} showProfile={false} />
+      <Header showProfile={false} />
       
       <div className="max-w-md mx-auto h-screen flex flex-col">
         {/* Chat Header */}
