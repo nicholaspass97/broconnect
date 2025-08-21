@@ -2,29 +2,20 @@
 
 import { useState } from 'react';
 import Header from './Header';
-import { UserCircleIcon, HeartIcon } from '@heroicons/react/24/outline';
-
-interface Profile {
-  id: string;
-  name: string;
-  ageRange: string;
-  interests: string[];
-  favoriteActivities: string[];
-  hasPartner: boolean;
-}
-
-const MOCK_PROFILE: Profile = {
-  id: '1',
-  name: 'Alex',
-  ageRange: '30-35',
-  interests: ['Cycling', 'BBQ'],
-  favoriteActivities: ['Weekend bike rides', 'Backyard grilling'],
-  hasPartner: true,
-};
+import { UserCircleIcon, HeartIcon, PencilIcon } from '@heroicons/react/24/outline';
 
 export default function ProfileView() {
-  const [profile] = useState<Profile>(MOCK_PROFILE);
-  const [hasWaved, setHasWaved] = useState(false);
+  const [profile] = useState({
+    name: 'John Doe',
+    ageRange: '30-35',
+    interests: ['Cycling', 'BBQ', 'Craft Beer'],
+    favoriteActivities: ['Weekend bike rides', 'Backyard grilling', 'Beer tasting'],
+    hasPartner: true,
+    relationshipStatus: 'Partnered',
+    location: 'San Diego'
+  });
+
+  const [isEditing, setIsEditing] = useState(false);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -41,7 +32,15 @@ export default function ProfileView() {
 
           {/* Interests */}
           <div className="mb-6">
-            <h3 className="font-semibold text-gray-900 mb-2">Interests</h3>
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="font-semibold text-gray-900">Interests</h3>
+              <button 
+                onClick={() => setIsEditing(!isEditing)}
+                className="p-1 hover:bg-gray-100 rounded"
+              >
+                <PencilIcon className="h-4 w-4 text-gray-500" />
+              </button>
+            </div>
             <div className="flex flex-wrap gap-2">
               {profile.interests.map((interest) => (
                 <span
@@ -58,7 +57,7 @@ export default function ProfileView() {
           {profile.hasPartner && (
             <div className="flex items-center gap-2 mb-6 p-3 bg-green-50 border border-green-200 rounded-lg">
               <HeartIcon className="h-5 w-5 text-green-600" />
-              <span className="text-sm text-green-800">In a relationship</span>
+              <span className="text-sm text-green-800">{profile.relationshipStatus}</span>
             </div>
           )}
 
@@ -74,18 +73,17 @@ export default function ProfileView() {
               ))}
             </div>
           </div>
+
+          {/* Location */}
+          <div className="mt-6 pt-6 border-t border-gray-200">
+            <h3 className="font-semibold text-gray-900 mb-2">Location</h3>
+            <p className="text-gray-700">{profile.location}</p>
+          </div>
         </div>
 
-        {/* Wave Button */}
-        <button
-          onClick={() => setHasWaved(!hasWaved)}
-          className={`w-full py-4 rounded-lg font-semibold transition-colors ${
-            hasWaved
-              ? 'bg-green-500 text-white'
-              : 'bg-white border-2 border-gray-900 text-gray-900 hover:bg-gray-50'
-          }`}
-        >
-          {hasWaved ? 'Waved!' : 'Wave'}
+        {/* Edit Profile Button */}
+        <button className="w-full bg-blue-500 text-white py-3 rounded-lg font-semibold hover:bg-blue-600 transition-colors">
+          Edit Profile
         </button>
       </div>
     </div>

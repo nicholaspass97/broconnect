@@ -14,7 +14,7 @@ interface Match {
 }
 
 interface SuggestedMatchesProps {
-  onNavigate?: (page: string) => void;
+  onNavigate?: (page: string, userId?: string) => void;
 }
 
 const MOCK_MATCHES: Match[] = [
@@ -38,7 +38,7 @@ export default function SuggestedMatches({ onNavigate }: SuggestedMatchesProps) 
 
   const handleViewProfile = (matchId: string) => {
     if (onNavigate) {
-      onNavigate('profile');
+      onNavigate('userProfile', matchId);
     }
   };
 

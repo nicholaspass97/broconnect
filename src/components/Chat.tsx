@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { PaperAirplaneIcon, UserCircleIcon } from '@heroicons/react/24/outline';
+import { PaperAirplaneIcon, UserCircleIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
 import Header from './Header';
 
 interface Message {
@@ -12,38 +12,104 @@ interface Message {
   isOwn: boolean;
 }
 
-interface ChatProps {
-  matchName?: string;
+interface Conversation {
+  id: string;
+  userId: string;
+  name: string;
+  lastMessage: string;
+  timestamp: Date;
+  unreadCount: number;
 }
 
-export default function Chat({ matchName = 'Alex' }: ChatProps) {
-  const [messages, setMessages] = useState<Message[]>([
+interface ChatProps {
+  selectedUserId?: string;
+  onNavigate: (page: string) => void;
+}
+
+const MOCK_CONVERSATIONS: Conversation[] = [
+  {
+    id: '1',
+    userId: '1',
+    name: 'John',
+    lastMessage: '8 AM at Balboa Park. Should be a good group!',
+    timestamp: new Date(Date.now() - 1000 * 60 * 20),
+    unreadCount: 0
+  },
+  {
+    id: '2',
+    userId: '2',
+    name: 'Mike',
+    lastMessage: 'Want to grab a beer this weekend?',
+    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2),
+    unreadCount: 1
+  },
+  {
+    id: '3',
+    userId: '3',
+    name: 'Mark',
+    lastMessage: 'Great game yesterday!',
+    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24),
+    unreadCount: 0
+  }
+];
+
+const MOCK_MESSAGES: Record<string, Message[]> = {
+  '1': [
     {
       id: '1',
       senderId: 'match',
       content: 'Hey! I saw we both like cycling. Want to join the Saturday group ride?',
-      timestamp: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
+      timestamp: new Date(Date.now() - 1000 * 60 * 30),
       isOwn: false
     },
     {
       id: '2',
       senderId: 'user',
       content: 'That sounds great! What time does it start?',
-      timestamp: new Date(Date.now() - 1000 * 60 * 25), // 25 minutes ago
+      timestamp: new Date(Date.now() - 1000 * 60 * 25),
       isOwn: true
     },
     {
       id: '3',
       senderId: 'match',
       content: '8 AM at Balboa Park. Should be a good group!',
-      timestamp: new Date(Date.now() - 1000 * 60 * 20), // 20 minutes ago
+      timestamp: new Date(Date.now() - 1000 * 60 * 20),
       isOwn: false
     }
-  ]);
+  ],
+  '2': [
+    {
+      id: '1',
+      senderId: 'match',
+      content: 'Hey! I saw we both like craft beer. Want to grab a beer this weekend?',
+      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2),
+      isOwn: false
+    }
+  ],
+  '3': [
+    {
+      id: '1',
+      senderId: 'user',
+      content: 'Great game yesterday!',
+      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24),
+      isOwn: true
+    }
+  ]
+};
+
+export default function Chat({ selectedUserId, onNavigate }: ChatProps) {
+  const [conversations] = useState<Conversation[]>(MOCK_CONVERSATIONS);
+  const [selectedUser, setSelectedUser] = useState<string | null>(selectedUserId || null);
+  const [messages, setMessages] = useState<Message[]>(selectedUserId ? MOCK_MESSAGES[selectedUserId] || [] : []);
   const [newMessage, setNewMessage] = useState('');
 
+  const handleSelectConversation = (userId: string) => {
+    setSelectedUser(userId);
+    setMessages(MOCK_MESSAGES[userId] || []);
+  };
+
   const handleSendMessage = () => {
-    if (newMessage.trim()) {
+    if (newMessage.trim() && selectedUser) {
       const message: Message = {
         id: Date.now().toString(),
         senderId: 'user',
@@ -63,13 +129,78 @@ export default function Chat({ matchName = 'Alex' }: ChatProps) {
     }
   };
 
+  const handleBack = () => {
+    setSelectedUser(null);
+  };
+
+  // Show conversation list
+  if (!selectedUser) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        
+        <div className="max-w-md mx-auto px-4 py-6">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Messages</h2>
+          
+          <div className="space-y-3">
+            {conversations.map((conversation) => (
+              <div
+                key={conversation.id}
+                onClick={() => handleSelectConversation(conversation.userId)}
+                className="bg-white rounded-lg p-4 shadow-sm border border-gray-200 cursor-pointer hover:bg-gray-50 transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <UserCircleIcon className="h-12 w-12 text-gray-400" />
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-semibold text-gray-900">{conversation.name}</h3>
+                      <span className="text-xs text-gray-500">
+                        {conversation.timestamp.toLocaleTimeString([], { 
+                          hour: '2-digit', 
+                          minute: '2-digit' 
+                        })}
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-600 truncate">{conversation.lastMessage}</p>
+                  </div>
+                  {conversation.unreadCount > 0 && (
+                    <div className="bg-blue-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                      {conversation.unreadCount}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {conversations.length === 0 && (
+            <div className="text-center py-8">
+              <p className="text-gray-500">No conversations yet</p>
+              <p className="text-sm text-gray-400 mt-2">Start waving at matches to begin chatting!</p>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // Show individual chat
+  const currentConversation = conversations.find(c => c.userId === selectedUser);
+  const matchName = currentConversation?.name || 'Unknown';
+
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header showProfile={false} />
+      <Header />
       
       <div className="max-w-md mx-auto h-screen flex flex-col">
         {/* Chat Header */}
         <div className="bg-white border-b border-gray-200 px-4 py-3 flex items-center gap-3">
+          <button
+            onClick={handleBack}
+            className="p-1 hover:bg-gray-100 rounded"
+          >
+            <ArrowLeftIcon className="h-5 w-5 text-gray-600" />
+          </button>
           <UserCircleIcon className="h-10 w-10 text-gray-400" />
           <div className="flex-1">
             <h3 className="font-semibold text-gray-900">{matchName}</h3>

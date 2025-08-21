@@ -7,6 +7,7 @@ import SignIn from '@/components/SignIn';
 import Onboarding from '@/components/Onboarding';
 import SuggestedMatches from '@/components/SuggestedMatches';
 import ProfileView from '@/components/ProfileView';
+import UserProfile from '@/components/UserProfile';
 import Groups from '@/components/Groups';
 import Chat from '@/components/Chat';
 import PrivacySafety from '@/components/PrivacySafety';
@@ -22,6 +23,7 @@ interface UserProfile {
 
 export default function Home() {
   const [currentPage, setCurrentPage] = useState('landing');
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userProfile, setUserProfile] = useState<UserProfile>({
     name: '',
@@ -31,11 +33,15 @@ export default function Home() {
     location: ''
   });
 
-  const handleNavigate = (page: string) => {
+  const handleNavigate = (page: string, userId?: string) => {
     setCurrentPage(page);
+    if (userId) {
+      setSelectedUserId(userId);
+    }
+    
     if (page === 'signup' || page === 'signin') {
       setIsAuthenticated(false);
-    } else if (page === 'matches' || page === 'groups' || page === 'profile' || page === 'chat' || page === 'privacy') {
+    } else if (page === 'matches' || page === 'groups' || page === 'profile' || page === 'chat' || page === 'privacy' || page === 'userProfile') {
       setIsAuthenticated(true);
     }
   };
@@ -64,10 +70,12 @@ export default function Home() {
         return <SuggestedMatches onNavigate={handleNavigate} />;
       case 'profile':
         return <ProfileView />;
+      case 'userProfile':
+        return selectedUserId ? <UserProfile userId={selectedUserId} onNavigate={handleNavigate} /> : <SuggestedMatches onNavigate={handleNavigate} />;
       case 'groups':
         return <Groups />;
       case 'chat':
-        return <Chat />;
+        return <Chat selectedUserId={selectedUserId || undefined} onNavigate={handleNavigate} />;
       case 'privacy':
         return <PrivacySafety />;
       default:
